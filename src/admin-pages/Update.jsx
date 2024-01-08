@@ -16,7 +16,7 @@ function Update() {
     axios
       .get(`http://localhost:3000/admin/course/${courseId}`, {
         headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
+          Authorization: "Bearer " + localStorage.getItem("tokenAdmin"),
         },
       })
       .then((res) => {
@@ -44,7 +44,7 @@ function Update() {
           },
           {
             headers: {
-              Authorization: "Bearer " + localStorage.getItem("token"),
+              Authorization: "Bearer " + localStorage.getItem("tokenAdmin"),
             },
           }
         )

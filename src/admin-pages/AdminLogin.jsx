@@ -5,11 +5,59 @@ import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import "../App.css";
+import { z } from "zod";
 
 function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [generalError, setGeneralError] = useState("");
+
+  const handleSubmit = async () => {
+    try {
+      const userInputSchema = z.object({
+        username: z.string().email(),
+        password: z.string().min(6),
+      });
+
+      const validatedData = userInputSchema.parse({
+        username: email,
+        password,
+      });
+
+      const response = await axios.post(
+        "http://localhost:3000/admin/login",
+
+        {
+          username: validatedData.username,
+          password: validatedData.password,
+        }
+      );
+      let data = response.data;
+      localStorage.setItem("tokenAdmin", data.token);
+      navigate("/admin/courses");
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        err.errors.forEach((error) => {
+          if (error.path.includes("username")) {
+            setEmailError("Invalid email format");
+          }
+          if (error.path.includes("password")) {
+            setPasswordError("Password must be at least 6 characters");
+          }
+        });
+      } else {
+        setGeneralError("Email and Password are not matching.");
+      }
+      setTimeout(() => {
+        setEmailError("");
+        setPasswordError("");
+        setGeneralError("");
+      }, 2500);
+    }
+  };
 
   return (
     <div
@@ -35,6 +83,16 @@ function AdminLogin() {
             Login to Admin account
           </Typography>
           <br />
+          {generalError && (
+            <div style={{ color: "red", paddingBottom: "3px" }}>
+              {generalError}
+            </div>
+          )}
+          {emailError && (
+            <div style={{ color: "red", paddingBottom: "3px" }}>
+              {emailError}
+            </div>
+          )}
           <TextField
             onChange={(e) => {
               let elemt = e.target;
@@ -47,6 +105,11 @@ function AdminLogin() {
           />
           <br />
           <br />
+          {passwordError && (
+            <div style={{ color: "red", paddingBottom: "3px" }}>
+              {passwordError}
+            </div>
+          )}
           <TextField
             onChange={(e) => {
               setPassword(e.target.value);
@@ -62,26 +125,14 @@ function AdminLogin() {
             size={"medium"}
             variant="contained"
             style={{ backgroundColor: "#000C66" }}
-            onClick={async () => {
-              const response = await axios.post(
-                "http://localhost:3000/admin/login",
-
-                {
-                  username: email,
-                  password: password,
-                }
-              );
-              let data = response.data;
-              localStorage.setItem("tokenAdmin", data.token);
-              navigate("/admin/courses");
-            }}
+            onClick={handleSubmit}
           >
             {" "}
             Signin
           </Button>
 
           <div className="new" style={{ marginTop: "12px" }}>
-            Dont have an account?{" "}
+            Dont have an account?
             <span
               className="hover"
               style={{ cursor: "pointer", fontWeight: "bold" }}

@@ -111,19 +111,19 @@ function AppBar() {
                 variant={"text"}
                 style={{ color: "white", fontWeight: "bold" }}
                 onClick={() => {
-                  navigate("/users/signin");
+                  navigate("/users/signup");
                 }}
               >
-                Login
+                Register
               </Button>
               <Button
                 variant={"text"}
                 style={{ color: "white", fontWeight: "bold" }}
                 onClick={() => {
-                  navigate("/users/signup");
+                  navigate("/users/signin");
                 }}
               >
-                Register
+                Login
               </Button>
               <Button
                 variant={"text"}

@@ -17,7 +17,7 @@ function AdminCourses() {
     fetch("http://localhost:3000/admin/courses/", {
       method: "GET",
       headers: {
-        Authorization: "Bearer " + localStorage.getItem("token"),
+        Authorization: "Bearer " + localStorage.getItem("tokenAdmin"),
       },
     }).then(callback1);
   }, []);
@@ -41,6 +41,8 @@ function AdminCourses() {
 export function Course({ course }) {
   const navigate = useNavigate();
 
+  const truncatedDescription = course.description.slice(0, 70);
+
   return (
     <Card
       style={{
@@ -52,20 +54,28 @@ export function Course({ course }) {
         boxShadow: "-1px 0 5px 0 rgba(0, 0, 0, .5)",
       }}
     >
-      <img src={course.imageLink} style={{ width: "300px", height: "200px" }} />
+      <img
+        src={course.imageLink}
+        style={{ width: "300px", height: "200px", objectFit: "cover" }}
+        alt="Course-Image"
+      />
+
       <Typography
         textAlign={"left"}
-        style={{ marginLeft: "10px" }}
-        variant="h6"
+        style={{ marginLeft: "10px", padding: "3px", fontSize:"18px" , fontWeight:"500" }}
       >
         {course.title}
       </Typography>
       <Typography
         textAlign={"left"}
-        style={{ marginLeft: "10px" }}
-        variant="subtitle1"
+        style={{
+          marginLeft: "10px",
+          fontSize: "15px",
+          padding: "3px",
+          opacity: "0.5",
+        }}
       >
-        {course.description}
+        {truncatedDescription}...
       </Typography>
 
       <div style={{ display: "flex", justifyContent: "center", marginTop: 5 }}>
@@ -92,7 +102,8 @@ export function Course({ course }) {
                 `http://localhost:3000/admin/course/${course._id}`,
                 {
                   headers: {
-                    Authorization: "Bearer " + localStorage.getItem("token"),
+                    Authorization:
+                      "Bearer " + localStorage.getItem("tokenAdmin"),
                   },
                 }
               );
@@ -100,8 +111,6 @@ export function Course({ course }) {
               console.log(response);
               alert("Course deleted successfully");
               window.location.reload();
-
-              // Additional logic if needed after successful deletion
             } catch (error) {
               console.error("Error deleting course:", error);
               alert("Failed to delete course. Please try again.");

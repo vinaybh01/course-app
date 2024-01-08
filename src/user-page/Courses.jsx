@@ -46,6 +46,8 @@ function Courses() {
 export function Course({ course }) {
   const navigate = useNavigate();
 
+  const truncatedDescription = course.description.slice(0, 70);
+
   return (
     <div onclick={() => navigate("/users/purchasedCourse")}>
       <Card
@@ -56,85 +58,71 @@ export function Course({ course }) {
           color: "black",
           background: "#F0F0F0",
           boxShadow: "-1px 0 5px 0 rgba(0, 0, 0, .5)",
+          position: "relative",
         }}
       >
         <img
           src={course.imageLink}
-          style={{ width: "300px", height: "200px" }}
+          style={{ width: "300px", height: "200px", objectFit: "cover" }}
+          alt="Course-Image"
         />
         <Typography
           textAlign={"left"}
-          style={{ marginLeft: "10px" }}
-          variant="h6"
+          style={{
+            marginLeft: "10px",
+            padding: "3px",
+            fontSize: "18px",
+            fontWeight: "500",
+          }}
         >
           {course.title}
         </Typography>
         <Typography
           textAlign={"left"}
-          style={{ marginLeft: "10px" }}
-          variant="subtitle1"
+          style={{
+            marginLeft: "10px",
+            fontSize: "15px",
+            padding: "3px",
+            opacity: "0.5",
+          }}
         >
-          {course.description}
+          {truncatedDescription}...
         </Typography>
+
         <Typography
           textAlign={"left"}
-          style={{ marginLeft: "10px" }}
-          variant="subtitle1"
+          style={{
+            marginLeft: "10px",
+            position: "absolute",
+            top: "12px",
+            right: "0px",
+            backgroundColor: "#BA0021",
+            color: "white",
+            padding: "2px 7px",
+            borderRadius: "10px 0px 0px 10px",
+            fontWeight: "600",
+          }}
         >
-          {course.price}
+          ₹{course.price}
         </Typography>
 
         <div
           style={{ display: "flex", justifyContent: "center", marginTop: 5 }}
         >
-          {/* <Button
-        variant={"contained"}
-        size="small"
-        style={{
-          backgroundColor: "#018749",
-          marginRight: "10px",
-        }}
-        onClick={async () => {
-          try {
-            const response = await axios.post(
-              `http://localhost:3000/users/courses/${course._id}`,
-              null,
-              {
-                headers: {
-                  Authorization:
-                    "Bearer " + localStorage.getItem("tokenUser"),
-                },
-              }
-            );
-            console.log(response);
-            alert("Course Purchased successfully");
-          } catch (error) {
-            console.error("Error purchasing course:", error);
-            if (error.response) {
-              console.log(
-                "Server responded with status:",
-                error.response.status
-              );
-              console.log("Response data:", error.response.data);
-            }
-            alert("Failed to purchase course. Please try again.");
-          }
-        }}
-      >
-        Purchase
-      </Button> */}
           <Button
             variant={"contained"}
             size="small"
             style={{
-              backgroundColor: "#018749",
-              marginRight: "10px",
+              backgroundColor: "#000C66",
+              fontWeight: "600",
+              padding: "5px 10px",
+              marginTop: "3px",
             }}
             onClick={() => {
               navigate("/users/course/" + course._id);
             }}
           >
-            View Course
+            Buy Course
           </Button>
         </div>
       </Card>
